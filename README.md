@@ -3,6 +3,6 @@ Keras implementations of Generative Adversarial Networks.
 
 
 ## Completed list
-- GAN
-- DCGAN
-- CGAN
+- GAN (Generative Adversarial Networks)
+- DCGAN (Deep Convolutional Generative Adversarial Networks)
+- CGAN (Conditional Generative Adversarial Nets )
