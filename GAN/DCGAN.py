@@ -1,5 +1,7 @@
 import numpy as np
+import livelossplot
 import tensorflow as tf
+
 
 def generator(latent_dim=100, channels=3):
     noise = tf.keras.Input(shape=(latent_dim,))
@@ -68,6 +70,8 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, image_shape=(96,96,3))
         .repeat())
     iterator = dataset.make_one_shot_iterator()
     (batch_image, target) = iterator.get_next()
+    
+    liveplot = livelossplot.PlotLosses(max_cols=2)
     for batch in range(batch_num):
         d_batch_noise = np.random.normal(0, 1, (batch_size, latent_dim))
         batch_gen_image = gnet.predict(d_batch_noise)
@@ -77,9 +81,10 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, image_shape=(96,96,3))
         d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
 
         g_loss = dcgan.train_on_batch(d_batch_noise, np.ones((batch_size, 1)))
-        if batch%5==0:
-            print("%d [D loss: %f, acc.: %.2f%%] [G loss: %f, acc.: %.2f%%]" %
-                (batch, d_loss[0], 100*d_loss[1], g_loss[0], 100*g_loss[1]))
+        if batch%1==0:
+            liveplot.update({'D_loss': d_loss[0], 'D_binary_acc': d_loss[1],
+                             'G_loss': g_loss[0], 'G_binary_acc': g_loss[1]})
+            liveplot.draw()
     return gnet
 
 
