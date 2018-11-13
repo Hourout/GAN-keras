@@ -1,4 +1,5 @@
 import numpy as np
+import livelossplot
 import tensorflow as tf
 
 
@@ -64,6 +65,7 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, num_classes=10, image_
     X_train = np.expand_dims(X_train, axis=3)
     y_train = y_train.reshape(-1, 1)
 
+    liveplot = livelossplot.PlotLosses(max_cols=2)
     for batch in range(batch_num):
         random = np.random.choice(range(X_train.shape[0]), batch_size, False)
         batch_image = X_train[random]
@@ -78,9 +80,10 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, num_classes=10, image_
         d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
         
         g_loss = cgan.train_on_batch([batch_noise, batch_noise_label], np.ones((batch_size, 1)))
-        if batch%100==0:
-            print("%d [D loss: %f, acc.: %.2f%%] [G loss: %f, acc.: %.2f%%]" %
-                (batch, d_loss[0], 100*d_loss[1], g_loss[0], 100*g_loss[1]))
+        if batch%1==0:
+            liveplot.update({'D_loss': d_loss[0], 'D_binary_acc': d_loss[1],
+                             'G_loss': g_loss[0], 'G_binary_acc': g_loss[1]})
+            liveplot.draw()
     return gnet
 
 
