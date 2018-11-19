@@ -1,7 +1,7 @@
+import beefly
 import scipy
 import numpy as np
 import tensorflow as tf
-import livelossplot
 
 
 def generator(latent_dim=100, image_shape=(28,28,1)):
@@ -78,7 +78,7 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, image_shape=(28,28,1))
     x2 = X_train[int(X_train.shape[0]/2):]
     x2 = scipy.ndimage.interpolation.rotate(x2, 90, axes=(1, 2))
 
-    liveplot = livelossplot.PlotLosses(max_cols=2)
+    beeplot = beefly.plot_metrics(columns=2, wait_num=50)
     for batch in range(batch_num):
         random = np.random.choice(range(x1.shape[0]), batch_size, False)
         batch_image1, batch_image2 = x1[random], x2[random]
@@ -95,11 +95,11 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, image_shape=(28,28,1))
 
         g_loss = cogan.train_on_batch(batch_noise, [np.ones((batch_size, 1)), np.ones((batch_size, 1))])
         if batch%1==0:
-            liveplot.update({'D1_loss': d1_loss[0], 'D1_binary_acc': d1_loss[1],
-                             'D2_loss': d2_loss[0], 'D2_binary_acc': d2_loss[1],
-                             'G1_loss': g_loss[1], 'G1_binary_acc': g_loss[3],
-                             'G2_loss': g_loss[2], 'G2_binary_acc': g_loss[4]})
-            liveplot.draw()
+            beeplot.update({'D1_loss': d1_loss[0], 'D1_binary_acc': d1_loss[1],
+                            'D2_loss': d2_loss[0], 'D2_binary_acc': d2_loss[1],
+                            'G1_loss': g_loss[1], 'G1_binary_acc': g_loss[3],
+                            'G2_loss': g_loss[2], 'G2_binary_acc': g_loss[4]})
+            beeplot.draw()
     return gnet1, gnet2
 
 
