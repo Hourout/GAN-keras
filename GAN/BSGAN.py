@@ -1,5 +1,5 @@
+import beefly
 import numpy as np
-import livelossplot
 import tensorflow as tf
 K = tf.keras.backend
 
@@ -55,7 +55,7 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, image_shape=(28,28,1))
     X_train = X_train / 127.5 - 1.
     X_train = np.expand_dims(X_train, axis=3)
     
-    liveplot = livelossplot.PlotLosses(max_cols=2)
+    beeplot = beefly.plot_metrics(columns=2, wait_num=50)
     for batch in range(batch_num):
         batch_image = X_train[np.random.choice(range(X_train.shape[0]), batch_size, False)]
         batch_noise = np.random.normal(0, 1, (batch_size, latent_dim))
@@ -68,9 +68,9 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, image_shape=(28,28,1))
         g_loss = bsgan.train_on_batch(batch_noise, np.ones((batch_size, 1)))
         
         if batch%1==0:
-            liveplot.update({'D_loss': d_loss[0], 'D_binary_acc': d_loss[1],
-                             'G_loss': g_loss[0], 'G_binary_acc': g_loss[1]})
-            liveplot.draw()
+            beeplot.update({'D_loss': d_loss[0], 'D_binary_acc': d_loss[1],
+                            'G_loss': g_loss[0], 'G_binary_acc': g_loss[1]})
+            beeplot.draw()
     return gnet
 
 
