@@ -1,5 +1,5 @@
+import beefly
 import numpy as np
-import livelossplot
 import tensorflow as tf
 
 
@@ -70,7 +70,7 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, num_classes=10, image_
     X_train = np.expand_dims(X_train, axis=3)
     y_train = y_train.reshape(-1, 1)
 
-    liveplot = livelossplot.PlotLosses(max_cols=3)
+    beeplot = beefly.plot_metrics(columns=3, wait_num=50)
     for batch in range(batch_num):
         random = np.random.choice(range(X_train.shape[0]), batch_size, False)
         batch_image = X_train[random]
@@ -88,9 +88,9 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, num_classes=10, image_
         g_loss = acgan.train_on_batch([batch_noise, batch_noise_label], [np.ones((batch_size, 1)), batch_noise_label])
         
         if batch%1==0:
-            liveplot.update({'D_loss': d_loss[0], 'D_binary_acc': d_loss[3], 'D_categorical_acc': d_loss[4],
-                             'G_loss': g_loss[0], 'G_binary_acc': g_loss[3], 'G_categorical_acc': g_loss[4]})
-            liveplot.draw()
+            beeplot.update({'D_loss': d_loss[0], 'D_binary_acc': d_loss[3], 'D_categorical_acc': d_loss[4],
+                            'G_loss': g_loss[0], 'G_binary_acc': g_loss[3], 'G_categorical_acc': g_loss[4]})
+            beeplot.draw()
     return gnet
 
 
