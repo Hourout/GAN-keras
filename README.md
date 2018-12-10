@@ -10,6 +10,7 @@ Keras implementations of Generative Adversarial Networks.
 - [COGAN](/GAN/COGAN.py) [(Coupled Generative Adversarial Networks)](https://arxiv.org/abs/1606.07536)
 - [DCGAN](/GAN/DCGAN.py) [(Deep Convolutional Generative Adversarial Networks)](http://arxiv.org/abs/1511.06434)
 - [GAN](/GAN/GAN.py) [(Generative Adversarial Networks)](https://arxiv.org/abs/1406.2661)
+- [NEMGAN](/GAN/NEMGAN.py) [(Noise Engineered Mode-matching GANs)](https://arxiv.org/abs/1811.03692)
 - [SGAN](/GAN/SGAN.py) [(Semi-Supervised Learning with Generative Adversarial Networks)](https://arxiv.org/abs/1606.01583)
 
 
