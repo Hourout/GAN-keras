@@ -9,6 +9,7 @@ Keras implementations of Generative Adversarial Networks.
 - [CGAN](/GAN/CGAN.py) [(Conditional Generative Adversarial Nets)](https://arxiv.org/abs/1411.1784)
 - [COGAN](/GAN/COGAN.py) [(Coupled Generative Adversarial Networks)](https://arxiv.org/abs/1606.07536)
 - [DCGAN](/GAN/DCGAN.py) [(Deep Convolutional Generative Adversarial Networks)](http://arxiv.org/abs/1511.06434)
+- [DualGAN](/GAN/DualGAN.py) [(DualGAN: Unsupervised Dual Learning for Image-to-Image Translation)](https://arxiv.org/abs/1704.02510)
 - [GAN](/GAN/GAN.py) [(Generative Adversarial Networks)](https://arxiv.org/abs/1406.2661)
 - [LSGAN](/GAN/LSGAN.py) [(Least Squares Generative Adversarial Networks)](https://arxiv.org/abs/1611.04076)
 - [NEMGAN](/GAN/NEMGAN.py) [(Noise Engineered Mode-matching GANs)](https://arxiv.org/abs/1811.03692)
