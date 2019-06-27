@@ -1,6 +1,6 @@
-import beefly
 import numpy as np
 import tensorflow as tf
+import tensorview as tv
 
 
 def generator(latent_dim=100, num_classes=10, image_shape=(28,28,1)):
@@ -31,7 +31,6 @@ def discriminator(image_shape=(28,28,1), num_classes=10):
     return dnet
 
 def train(batch_num=10000, batch_size=64, latent_dim=100, image_shape=(28,28,1)):
-    tf.logging.set_verbosity(tf.logging.ERROR)
     dnet = discriminator(image_shape)
     dnet.compile(loss=['mse'], 
                  optimizer=tf.keras.optimizers.Adam(0.0002, 0.5),
@@ -51,7 +50,7 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, image_shape=(28,28,1))
     X_train = X_train / 127.5 - 1.
     X_train = np.expand_dims(X_train, axis=3)
     
-    beeplot = beefly.plot_metrics(columns=2, wait_num=50)
+    tv_plot = tv.train.PlotMetrics(columns=2, wait_num=50)
     for batch in range(batch_num):
         batch_image = X_train[np.random.choice(range(X_train.shape[0]), batch_size, False)]
         batch_noise = np.random.normal(0, 1, (batch_size, latent_dim))
@@ -61,10 +60,11 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, image_shape=(28,28,1))
         d_loss_fake = dnet.train_on_batch(batch_gen_image, np.zeros((batch_size, 1)))
         d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
         g_loss = lsgan.train_on_batch(batch_noise, np.ones((batch_size, 1)))
-        if batch%1==0:
-            beeplot.update({'D_loss': d_loss[0], 'D_binary_acc': d_loss[1],
+        tv_plot.update({'D_loss': d_loss[0], 'D_binary_acc': d_loss[1],
                             'G_loss': g_loss[0], 'G_binary_acc': g_loss[1]})
-            beeplot.draw()
+        tv_plot.draw()
+    tv_plot.visual()
+    tv_plot.visual(name='model_visual_gif', gif=True)
     return gnet
 
 
