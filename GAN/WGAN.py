@@ -1,6 +1,6 @@
-import beefly
 import numpy as np
 import tensorflow as tf
+import tensorview as tv
 K = tf.keras.backend
 
 def wasserstein_loss(y_true, y_pred):
@@ -39,7 +39,6 @@ def discriminator(image_shape=(28,28,1)):
     return dnet
 
 def train(batch_num=10000, batch_size=128, latent_dim=100, image_shape=(28,28,1), opt_num=5, clip_value=0.01):
-    tf.logging.set_verbosity(tf.logging.ERROR)
     dnet = discriminator(image_shape)
     dnet.compile(loss=wasserstein_loss, 
                  optimizer=tf.keras.optimizers.RMSprop(lr=0.00005),
@@ -59,7 +58,7 @@ def train(batch_num=10000, batch_size=128, latent_dim=100, image_shape=(28,28,1)
     X_train = X_train / 127.5 - 1.
     X_train = np.expand_dims(X_train, axis=3)
     
-    beeplot = beefly.plot_metrics(columns=2, wait_num=50)
+    tv_plot = tv.train.PlotMetrics(columns=2, wait_num=50)
     for batch in range(batch_num):
         for _ in range(opt_num):
             batch_image = X_train[np.random.choice(range(X_train.shape[0]), batch_size, False)]
@@ -75,9 +74,11 @@ def train(batch_num=10000, batch_size=128, latent_dim=100, image_shape=(28,28,1)
                 weights = [np.clip(w, -clip_value, clip_value) for w in weights]
                 l.set_weights(weights)
         g_loss = wgan.train_on_batch(batch_noise, -np.ones((batch_size, 1)))
-        beeplot.update({'D_loss': d_loss[0], 'D_binary_acc': d_loss[1],
+        tv_plot.update({'D_loss': d_loss[0], 'D_binary_acc': d_loss[1],
                         'G_loss': g_loss[0], 'G_binary_acc': g_loss[1]})
-        beeplot.draw()
+        tv_plot.draw()
+    tv_plot.visual()
+    tv_plot.visual(name='model_visual_gif', gif=True)
     return gnet
 
 
