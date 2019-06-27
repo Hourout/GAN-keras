@@ -1,6 +1,6 @@
-import beefly
 import numpy as np
 import tensorflow as tf
+import tensorview as tv
 
 
 def generator(latent_dim=100):
@@ -45,8 +45,6 @@ def discriminator(num_classes=10, image_shape=(28,28,1)):
     return dnet
 
 def train(batch_num=10000, batch_size=64, latent_dim=100, num_classes=10, image_shape=(28,28,1)):
-    tf.logging.set_verbosity(tf.logging.ERROR)
-
     dnet= discriminator(num_classes, image_shape)
     dnet.compile(loss=['binary_crossentropy', 'categorical_crossentropy'],
                  optimizer=tf.keras.optimizers.Adam(0.0002, 0.5),
@@ -70,7 +68,7 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, num_classes=10, image_
     w2 = {i: num_classes /(batch_size//2) for i in range(num_classes)}
     w2[num_classes] = 1 /(batch_size//2)
     
-    beeplot = beefly.plot_metrics(columns=2, wait_num=50)
+    tv_plot = tv.train.PlotMetrics(columns=2, wait_num=50)
     for batch in range(batch_num):
         random = np.random.choice(range(X_train.shape[0]), batch_size, False)
         batch_image = X_train[random]
@@ -83,11 +81,12 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, num_classes=10, image_
         d_loss_fake = dnet.train_on_batch(batch_image_gen, [np.zeros((batch_size, 1)), batch_noise_label], class_weight=[w1, w2])
         d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
         g_loss = sgan.train_on_batch(batch_noise,  np.ones((batch_size, 1)))
-        if batch%1==0:
-            beeplot.update({'D_binary_loss': d_loss[1], 'D_binary_acc': d_loss[3],
-                            'D_categorical_loss': d_loss[2], 'D_categorical_acc': d_loss[4],
-                            'G_loss': g_loss[0],  'G_acc': g_loss[1]})
-            beeplot.draw()
+        tv_plot.update({'D_binary_loss': d_loss[1], 'D_binary_acc': d_loss[3],
+                        'D_categorical_loss': d_loss[2], 'D_categorical_acc': d_loss[4],
+                        'G_loss': g_loss[0],  'G_acc': g_loss[1]})
+        tv_plot.draw()
+    tv_plot.visual()
+    tv_plot.visual(name='model_visual_gif', gif=True)
     return gnet
 
 
