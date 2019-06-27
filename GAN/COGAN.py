@@ -1,7 +1,7 @@
-import beefly
 import scipy
 import numpy as np
 import tensorflow as tf
+import tensorview as tv
 
 
 def generator(latent_dim=100, image_shape=(28,28,1)):
@@ -48,7 +48,6 @@ def discriminator(image_shape=(28,28,1)):
     return dnet1, dnet2
 
 def train(batch_num=10000, batch_size=64, latent_dim=100, image_shape=(28,28,1)):
-    tf.logging.set_verbosity(tf.logging.ERROR)
     dnet1, dnet2 = discriminator(image_shape)
     dnet1.compile(loss='binary_crossentropy',
                   optimizer=tf.keras.optimizers.Adam(0.0002, 0.5),
@@ -78,7 +77,7 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, image_shape=(28,28,1))
     x2 = X_train[int(X_train.shape[0]/2):]
     x2 = scipy.ndimage.interpolation.rotate(x2, 90, axes=(1, 2))
 
-    beeplot = beefly.plot_metrics(columns=2, wait_num=50)
+    tv_plot = tv.train.PlotMetrics(columns=2, wait_num=50)
     for batch in range(batch_num):
         random = np.random.choice(range(x1.shape[0]), batch_size, False)
         batch_image1, batch_image2 = x1[random], x2[random]
@@ -94,12 +93,13 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, image_shape=(28,28,1))
         d2_loss = 0.5 * np.add(d2_loss_real, d2_loss_fake)
 
         g_loss = cogan.train_on_batch(batch_noise, [np.ones((batch_size, 1)), np.ones((batch_size, 1))])
-        if batch%1==0:
-            beeplot.update({'D1_loss': d1_loss[0], 'D1_binary_acc': d1_loss[1],
-                            'D2_loss': d2_loss[0], 'D2_binary_acc': d2_loss[1],
-                            'G1_loss': g_loss[1], 'G1_binary_acc': g_loss[3],
-                            'G2_loss': g_loss[2], 'G2_binary_acc': g_loss[4]})
-            beeplot.draw()
+        tv_plot.update({'D1_loss': d1_loss[0], 'D1_binary_acc': d1_loss[1],
+                        'D2_loss': d2_loss[0], 'D2_binary_acc': d2_loss[1],
+                        'G1_loss': g_loss[1], 'G1_binary_acc': g_loss[3],
+                        'G2_loss': g_loss[2], 'G2_binary_acc': g_loss[4]})
+        tv_plot.draw()
+    tv_plot.visual()
+    tv_plot.visual(name='model_visual_gif', gif=True)
     return gnet1, gnet2
 
 
