@@ -1,7 +1,7 @@
-import beefly
-import numpy as np
 import scipy
+import numpy as np
 import tensorflow as tf
+import tensorview as tv
 K = tf.keras.backend
 
 def generator(latent_dim=784):
@@ -37,7 +37,6 @@ def wasserstein_loss(y_true, y_pred):
     return K.mean(y_true * y_pred)
 
 def train(batch_num=1000, latent_dim=784, batch_size=128, n_critic=4, clip_value=0.01):
-    tf.logging.set_verbosity(tf.logging.ERROR)
     dnet_a = discriminator(latent_dim)
     dnet_a.compile(loss=wasserstein_loss,
                    optimizer=tf.keras.optimizers.Adam(0.0002, 0.5),
@@ -68,7 +67,7 @@ def train(batch_num=1000, latent_dim=784, batch_size=128, n_critic=4, clip_value
     X_a = X_train[:int(X_train.shape[0]/2)].reshape([-1, latent_dim])
     X_b = scipy.ndimage.interpolation.rotate(X_train[int(X_train.shape[0]/2):], 90, axes=(1, 2)).reshape([-1, latent_dim])
 
-    beeplot = beefly.plot_metrics(columns=2, wait_num=5)
+    tv_plot = tv.train.PlotMetrics(columns=2, wait_num=5)
     valid = -np.ones((batch_size, 1))
     fake = np.ones((batch_size, 1))
     for batch in range(batch_num):
@@ -89,11 +88,12 @@ def train(batch_num=1000, latent_dim=784, batch_size=128, n_critic=4, clip_value
                     weights = [np.clip(w, -clip_value, clip_value) for w in weights]
                     l.set_weights(weights)
         g_loss = dualgan.train_on_batch([batch_image_a, batch_image_b], [valid, valid, batch_image_a, batch_image_b])
-        if batch%1==0:
-            beeplot.update({'D_a_loss': d_a_loss[0], 'D_a_binary_acc': d_a_loss[1],
-                            'D_b_loss': d_b_loss[0], 'D_b_binary_acc': d_b_loss[1],
-                            'G_a_loss': g_loss[1],  'G_b_loss': g_loss[2]})
-            beeplot.draw()
+        tv_plot.update({'D_a_loss': d_a_loss[0], 'D_a_binary_acc': d_a_loss[1],
+                        'D_b_loss': d_b_loss[0], 'D_b_binary_acc': d_b_loss[1],
+                        'G_a_loss': g_loss[1],  'G_b_loss': g_loss[2]})
+        tv_plot.draw()
+    tv_plot.visual()
+    tv_plot.visual(name='model_visual_gif', gif=True)
     return gnet_a, gnet_b
 
 
