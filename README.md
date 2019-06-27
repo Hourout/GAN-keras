@@ -1,4 +1,4 @@
-# GAN-keras
+# GAN-keras-tensorflow
 tensorflow2.X implementations of Generative Adversarial Networks.
 
 
