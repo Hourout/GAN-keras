@@ -56,9 +56,10 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, num_classes=10, image_
     noise = tf.keras.Input(shape=(latent_dim,))
     label = tf.keras.Input(shape=(1,), dtype='int32')
     gnet = generator(latent_dim, num_classes, channels=image_shape[2])
-    dnet.trainable = False
+    frozen = tf.keras.Model(dnet.inputs, dnet.outputs)
+    frozen.trainable = False
     image = gnet([noise, label])
-    logit, target_label = dnet(image)
+    logit, target_label = frozen(image)
     acgan = tf.keras.Model([noise, label], [logit, target_label])
     acgan.compile(loss=['binary_crossentropy', 'sparse_categorical_crossentropy'],
                   optimizer=tf.keras.optimizers.Adam(0.0002, 0.5),
