@@ -46,9 +46,10 @@ def train(batch_num=10000, batch_size=128, latent_dim=100, image_shape=(28,28,1)
 
     noise = tf.keras.Input(shape=(latent_dim,))
     gnet = generator(latent_dim)
-    dnet.trainable = False
+    frozen = tf.keras.Model(dnet.inputs, dnet.outputs)
+    frozen.trainable = False
     image = gnet(noise)
-    logit = dnet(image)
+    logit = frozen(image)
     wgan = tf.keras.Model(noise, logit)
     wgan.compile(loss=wasserstein_loss,
                  optimizer=tf.keras.optimizers.RMSprop(lr=0.00005),
@@ -58,7 +59,7 @@ def train(batch_num=10000, batch_size=128, latent_dim=100, image_shape=(28,28,1)
     X_train = X_train / 127.5 - 1.
     X_train = np.expand_dims(X_train, axis=3)
     
-    tv_plot = tv.train.PlotMetrics(columns=2, wait_num=50)
+    tv_plot = tv.train.PlotMetrics(columns=2, wait_num=5)
     for batch in range(batch_num):
         for _ in range(opt_num):
             batch_image = X_train[np.random.choice(range(X_train.shape[0]), batch_size, False)]
