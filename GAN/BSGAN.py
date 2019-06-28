@@ -32,7 +32,7 @@ def discriminator(image_shape=(28,28,1)):
     return dnet
 
 def boundary_loss(y_true, y_pred):
-        return 0.5 * K.mean((K.log(y_pred) - K.log(1 - y_pred))**2)
+    return 0.5 * K.mean((K.log(y_pred) - K.log(1 - y_pred))**2)
 
 def train(batch_num=10000, batch_size=64, latent_dim=100, image_shape=(28,28,1)):
     dnet = discriminator(image_shape)
@@ -42,9 +42,10 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, image_shape=(28,28,1))
 
     noise = tf.keras.Input(shape=(latent_dim,))
     gnet = generator(latent_dim, image_shape)
-    dnet.trainable = False
+    frozen = tf.keras.Model(dnet.inputs, dnet.outputs)
+    frozen.trainable = False
     image = gnet(noise)
-    logit = dnet(image)
+    logit = frozen(image)
     bsgan = tf.keras.Model(noise, logit)
     bsgan.compile(loss=boundary_loss,
                   optimizer=tf.keras.optimizers.Adam(0.0002, 0.5),
