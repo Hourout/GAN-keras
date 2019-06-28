@@ -49,12 +49,14 @@ def train(batch_num=1000, latent_dim=784, batch_size=128, n_critic=4, clip_value
     image_b = tf.keras.Input(shape=(latent_dim,))
     gnet_a = generator(latent_dim)
     gnet_b = generator(latent_dim)
-    dnet_a.trainable = False
-    dnet_b.trainable = False
     image_gen_a = gnet_a(image_a)
     image_gen_b = gnet_b(image_b)
-    logit_a = dnet_a(image_gen_b)
-    logit_b = dnet_b(image_gen_a)
+    frozen_a = tf.keras.Model(dnet_a.inputs, dnet_a.outputs)
+    frozen_a.trainable = False
+    frozen_b = tf.keras.Model(dnet_b.inputs, dnet_b.outputs)
+    frozen_b.trainable = False
+    logit_a = frozen_a(image_gen_b)
+    logit_b = frozen_b(image_gen_a)
     recov_b = gnet_a(image_gen_b)
     recov_a = gnet_b(image_gen_a)
     dualgan = tf.keras.Model([image_a, image_b], [logit_a, logit_b, recov_a, recov_b])
@@ -62,7 +64,7 @@ def train(batch_num=1000, latent_dim=784, batch_size=128, n_critic=4, clip_value
                     optimizer=tf.keras.optimizers.Adam(0.0002, 0.5),
                     loss_weights=[1, 1, 100, 100])
     
-    (X_train, _), (_, _) = tf.keras.datasets.mnist.load_data()
+    (X_train, _), (_, _) = tf.keras.datasets.fashion_mnist.load_data()
     X_train = X_train / 127.5 - 1.
     X_a = X_train[:int(X_train.shape[0]/2)].reshape([-1, latent_dim])
     X_b = scipy.ndimage.interpolation.rotate(X_train[int(X_train.shape[0]/2):], 90, axes=(1, 2)).reshape([-1, latent_dim])
