@@ -1,6 +1,6 @@
-import beefly
 import numpy as np
 import tensorflow as tf
+import tensorview as tv
 
 
 def generator(latent_dim=100, num_classes=10, image_shape=(28,28,1)):
@@ -43,7 +43,6 @@ def discriminator(image_shape=(28,28,1), num_classes=10):
     return dnet
 
 def train(batch_num=10000, batch_size=64, latent_dim=100, num_classes=10, image_shape=(28,28,1)):
-    tf.logging.set_verbosity(tf.logging.ERROR)
     dnet = discriminator(image_shape, num_classes)
     dnet.compile(loss=['binary_crossentropy'], 
                  optimizer=tf.keras.optimizers.Adam(0.0002, 0.5),
