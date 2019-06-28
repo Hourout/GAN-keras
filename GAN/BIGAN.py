@@ -57,11 +57,12 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, image_shape=(28,28,1))
     image = tf.keras.Input(shape=image_shape)
     gnet = generator(latent_dim, image_shape)
     encoder_net = image_encoder(latent_dim, image_shape)
-    dnet.trainable = False
+    frozen = tf.keras.Model(dnet.inputs, dnet.outputs)
+    frozen.trainable = False
     image_gen = gnet(noise)
     image_encode = encoder_net(image)
-    logit_fake = dnet([noise, image_gen])
-    logit_real = dnet([image_encode, image])
+    logit_fake = frozen([noise, image_gen])
+    logit_real = frozen([image_encode, image])
     bigan = tf.keras.Model([noise, image], [logit_fake, logit_real])
     bigan.compile(loss=['binary_crossentropy', 'binary_crossentropy'],
                   optimizer=tf.keras.optimizers.Adam(0.0002, 0.5),
