@@ -38,9 +38,10 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, image_shape=(28,28,1))
 
     noise = tf.keras.Input(shape=(latent_dim,))
     gnet = generator(latent_dim, image_shape)
-    dnet.trainable = False
+    frozen = tf.keras.Model(dnet.inputs, dnet.outputs)
+    frozen.trainable = False
     image = gnet(noise)
-    logit = dnet(image)
+    logit = frozen(image)
     lsgan = tf.keras.Model(noise, logit)
     lsgan.compile(loss=['mse'],
                   optimizer=tf.keras.optimizers.Adam(0.0002, 0.5),
@@ -61,7 +62,7 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, image_shape=(28,28,1))
         d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
         g_loss = lsgan.train_on_batch(batch_noise, np.ones((batch_size, 1)))
         tv_plot.update({'D_loss': d_loss[0], 'D_binary_acc': d_loss[1],
-                            'G_loss': g_loss[0], 'G_binary_acc': g_loss[1]})
+                        'G_loss': g_loss[0], 'G_binary_acc': g_loss[1]})
         tv_plot.draw()
     tv_plot.visual()
     tv_plot.visual(name='model_visual_gif', gif=True)
