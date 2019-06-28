@@ -52,9 +52,10 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, num_classes=10, image_
 
     noise = tf.keras.Input(shape=(latent_dim,))
     gnet = generator(latent_dim)
-    dnet.trainable = False
+    frozen = tf.keras.Model(dnet.inputs, dnet.outputs)
+    frozen.trainable = False
     image = gnet(noise)
-    valid, _ = dnet(image)
+    valid, _ = frozen(image)
     sgan = tf.keras.Model(noise, valid)
     sgan.compile(loss=['binary_crossentropy'],
                  optimizer=tf.keras.optimizers.Adam(0.0002, 0.5),
