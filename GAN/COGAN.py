@@ -60,10 +60,12 @@ def train(batch_num=10000, batch_size=64, latent_dim=100, image_shape=(28,28,1))
     gnet1, gnet2 = generator(latent_dim, image_shape)
     image1 = gnet1(noise)
     image2 = gnet2(noise)
-    dnet1.trainable = False
-    dnet2.trainable = False
-    logit1 = dnet1(image1)
-    logit2 = dnet1(image2)
+    frozen1 = tf.keras.Model(dnet1.inputs, dnet1.outputs)
+    frozen1.trainable = False
+    frozen2 = tf.keras.Model(dnet2.inputs, dnet2.outputs)
+    frozen2.trainable = False
+    logit1 = frozen1(image1)
+    logit2 = frozen2(image2)
     cogan = tf.keras.Model(noise, [logit1, logit2])
     cogan.compile(loss=['binary_crossentropy', 'binary_crossentropy'],
                   optimizer=tf.keras.optimizers.Adam(0.0002, 0.5),
