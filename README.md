@@ -10,7 +10,7 @@ tensorflow2.X implementations of Generative Adversarial Networks.
 - [中文介绍](https://mp.weixin.qq.com/s/6BtQ9ajQRR-saRpcD9DCjw) | [CGAN](https://github.com/Hourout/GAN-keras/blob/master/GAN/CGAN.py) | [(Conditional Generative Adversarial Nets)](https://arxiv.org/abs/1411.1784)
 - [中文介绍](https://mp.weixin.qq.com/s/kzHQoAvLVhUmidhuNl2gaA) | [COGAN](https://github.com/Hourout/GAN-keras/blob/master/GAN/COGAN.py) | [(Coupled Generative Adversarial Networks)](https://arxiv.org/abs/1606.07536)
 - [中文介绍](https://mp.weixin.qq.com/s/7HnEQEET-TyX473JhK06ig) | [DCGAN](https://github.com/Hourout/GAN-keras/blob/master/GAN/DCGAN.py) | [(Deep Convolutional Generative Adversarial Networks)](http://arxiv.org/abs/1511.06434)
-- [DualGAN](https://github.com/Hourout/GAN-keras/blob/master/GAN/DualGAN.py) | [(DualGAN: Unsupervised Dual Learning for Image-to-Image Translation)](https://arxiv.org/abs/1704.02510)
+- [中文介绍](https://mp.weixin.qq.com/s/qBe-ti4RKMM1og0Pl5F5wQ) | [DualGAN](https://github.com/Hourout/GAN-keras/blob/master/GAN/DualGAN.py) | [(DualGAN: Unsupervised Dual Learning for Image-to-Image Translation)](https://arxiv.org/abs/1704.02510)
 - [中文介绍](https://mp.weixin.qq.com/s/X8rnzGMbRaCOH_MkPrTymw) | [GAN](https://github.com/Hourout/GAN-keras/blob/master/GAN/GAN.py) | [(Generative Adversarial Networks)](https://arxiv.org/abs/1406.2661)
 - [中文介绍](https://mp.weixin.qq.com/s/z56BueII1AbCVVvRo0nYdw) | [LSGAN](https://github.com/Hourout/GAN-keras/blob/master/GAN/LSGAN.py) | [(Least Squares Generative Adversarial Networks)](https://arxiv.org/abs/1611.04076)
 - [中文介绍](https://mp.weixin.qq.com/s/bbtLq_NCSEeBOOjQyPgigw) | [NEMGAN](https://github.com/Hourout/GAN-keras/blob/master/GAN/NEMGAN.py) | [(Noise Engineered Mode-matching GANs)](https://arxiv.org/abs/1811.03692)
