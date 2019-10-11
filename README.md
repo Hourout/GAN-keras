@@ -18,7 +18,7 @@ tensorflow2.X implementations of Generative Adversarial Networks.
 - [中文介绍](https://mp.weixin.qq.com/s/nLgl2iIpNXBuQsMngoTQ3g) | [WGAN](https://github.com/Hourout/GAN-keras/blob/master/GAN/WGAN.py) | [(Wasserstein GAN)](https://arxiv.org/abs/1701.07875)
 
 ## Welcome to WeChat blog
-![](qrcode_for_gh_213bdb5b4f27_344.jpg)
+![](https://github.com/Hourout/GAN-keras/blob/master/image/keras_wechat.jpg)
 
 ## Contact
 Please contact me if you have any related questions or improvements.
