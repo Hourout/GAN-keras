@@ -19,3 +19,8 @@ tensorflow2.X implementations of Generative Adversarial Networks.
 
 ## Welcome to WeChat blog
 ![](qrcode_for_gh_213bdb5b4f27_344.jpg)
+
+## Contact
+Please contact me if you have any related questions or improvements.
+
+[WeChat](https://github.com/Hourout/GAN-keras/blob/master/image/hourout_wechat.jpg)
